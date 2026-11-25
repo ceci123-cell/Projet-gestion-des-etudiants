@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion d'assiduité des étudiants</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="application">
+
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">GA</div>
+                <div>
+                    <h2>GESTION GA</h2>
+                    <span>Assiduité scolaire</span>
+                </div>
+            </div>
+
+            <div class="profile">
+                <div class="profile-avatar">AD</div>
+                <div>
+                    <h3 id="nomUtilisateur">Administrateur</h3>
+                    <span id="roleUtilisateur">Administration</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+                <p class="nav-title">MENU PRINCIPAL</p>
+
+                <button class="nav-link active" data-page="dashboard">
+                    <span>▦</span> Tableau de bord
+                </button>
+
+                <button class="nav-link" data-page="etudiants">
+                    <span>♙</span> Étudiants
+                </button>
+
+                <button class="nav-link" data-page="enseignants">
+                    <span>♧</span> Enseignants
+                </button>
+
+                <button class="nav-link" data-page="classes">
+                    <span>▤</span> Classes
+                </button>
+
+                <button class="nav-link" data-page="presences">
+                    <span>✓</span> Faire l'appel
+                </button>
+
+                <button class="nav-link" data-page="historique">
+                    <span>◷</span> Historique
+                </button>
+
+                <p class="nav-title">GESTION</p>
+
+                <button class="nav-link" data-page="justifications">
+                    <span>▧</span> Justifications
+                </button>
+
+                <button class="nav-link" data-page="rapports">
+                    <span>▥</span> Rapports
+                </button>
+
+                <button class="nav-link" data-page="utilisateurs">
+                    <span>♙</span> Comptes utilisateurs
+                </button>
+
+                <button class="nav-link" data-page="parametres">
+                    <span>⚙</span> Paramètres
+                </button>
+            </nav>
+
+            <button class="logout-button" id="deconnexion">
+                ↪ Déconnexion
+            </button>
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h2 id="titrePage">Tableau de bord</h2>
+                    <p>Bienvenue dans votre espace de gestion.</p>
+                </div>
+
+                <div class="topbar-right">
+                    <span id="dateActuelle"></span>
+                    <div class="notification">♧</div>
+                </div>
+            </header>
+
+            <div class="pages">
+
+                <section class="page active" id="dashboard">
+
+                    <div class="welcome">
+                        <div>
+                            <h2>Bienvenue sur votre tableau de bord !</h2>
+                            <p>Suivez facilement l'assiduité de vos étudiants.</p>
+                        </div>
+                        <div class="welcome-icon">🎓</div>
+                    </div>
+
+                    <div class="statistics">
+
+                        <div class="stat-card">
+                            <div class="stat-icon blue">♙</div>
+                            <p>Total étudiants</p>
+                            <h2 id="totalEtudiants">0</h2>
+                            <span>Étudiants inscrits</span>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon green">✓</div>
+                            <p>Présents</p>
+                            <h2 id="totalPresents">0</h2>
+                            <span>Présences enregistrées</span>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon red">✕</div>
+                            <p>Absents</p>
+                            <h2 id="totalAbsents">0</h2>
+                            <span>Absences enregistrées</span>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon orange">◷</div>
+                            <p>Retards</p>
+                            <h2 id="totalRetards">0</h2>
+                            <span>Retards enregistrés</span>
+                        </div>
+
+                    </div>
+
+                    <div class="dashboard-grid">
+
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h3>Dernières présences</h3>
+                                <button class="small-button" data-go="historique">Voir tout</button>
+                            </div>
+
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Étudiant</th>
+                                            <th>Classe</th>
+                                            <th>Date</th>
+                                            <th>Statut</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dernieresPresences">
+                                        <tr>
+                                            <td colspan="4">Aucune donnée disponible.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <h3>Résumé de l'assiduité</h3>
+                            <div class="attendance-summary">
+                                <div class="progress-circle" id="cercleAssiduite">
+                                    <span id="tauxAssiduite">0%</span>
+                                </div>
+                                <p>Taux global de présence</p>
+                                <span>Calculé à partir des appels enregistrés</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="page" id="etudiants">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Gestion des étudiants</h2>
+                            <p>Enregistrer et gérer les étudiants.</p>
+                        </div>
+                        <button class="primary-button" id="ouvrirFormEtudiant">+ Ajouter un étudiant</button>
+                    </div>
+
+                    <div class="panel form-panel" id="formulaireEtudiant" hidden>
+                        <h3 id="titreFormEtudiant">Nouvel étudiant</h3>
+
+                        <form id="formEtudiant">
+                            <input type="hidden" id="idEtudiant">
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nom</label>
+                                    <input type="text" id="nomEtudiant" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Prénom</label>
+                                    <input type="text" id="prenomEtudiant" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Matricule</label>
+                                    <input type="text" id="matriculeEtudiant" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Sexe</label>
+                                    <select id="sexeEtudiant" required>
+                                        <option value="">Choisir</option>
+                                        <option value="Féminin">Féminin</option>
+                                        <option value="Masculin">Masculin</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Classe</label>
+                                    <select id="classeEtudiant" required>
+                                        <option value="">Choisir une classe</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" id="telephoneEtudiant">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="emailEtudiant">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="secondary-button" id="annulerEtudiant">Annuler</button>
+                                <button type="submit" class="primary-button">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel">
+                        <div class="table-toolbar">
+                            <input type="search" id="rechercheEtudiant" placeholder="Rechercher un étudiant...">
+                            <select id="filtreClasseEtudiant">
+                                <option value="">Toutes les classes</option>
+                            </select>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Nom complet</th>
+                                        <th>Sexe</th>
+                                        <th>Classe</th>
+                                        <th>Téléphone</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listeEtudiants"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="page" id="enseignants">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Gestion des enseignants</h2>
+                            <p>Gérer les enseignants et leurs classes.</p>
+                        </div>
+                        <button class="primary-button" id="ouvrirFormEnseignant">+ Ajouter un enseignant</button>
+                    </div>
+
+                    <div class="panel" id="formulaireEnseignant" hidden>
+                        <h3>Nouvel enseignant</h3>
+                        <form id="formEnseignant">
+                            <input type="hidden" id="idEnseignant">
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nom complet</label>
+                                    <input type="text" id="nomEnseignant" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="emailEnseignant" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Téléphone</label>
+                                    <input type="tel" id="telephoneEnseignant">
+                                </div>
+                                <div class="form-group">
+                                    <label>Classe attribuée</label>
+                                    <select id="classeEnseignant" required></select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="secondary-button" id="annulerEnseignant">Annuler</button>
+                                <button type="submit" class="primary-button">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>Classe</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listeEnseignants"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="page" id="classes">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Gestion des classes</h2>
+                            <p>Créer et organiser les classes.</p>
+                        </div>
+                        <button class="primary-button" id="ouvrirFormClasse">+ Ajouter une classe</button>
+                    </div>
+
+                    <div class="panel" id="formulaireClasse" hidden>
+                        <form id="formClasse">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nom de la classe</label>
+                                    <input type="text" id="nomClasse" required placeholder="Exemple : Licence 2">
+                                </div>
+                                <div class="form-group">
+                                    <label>Filière</label>
+                                    <input type="text" id="filiereClasse" required>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="secondary-button" id="annulerClasse">Annuler</button>
+                                <button type="submit" class="primary-button">Enregistrer</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Classe</th>
+                                    <th>Filière</th>
+                                    <th>Effectif</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listeClasses"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="page" id="presences">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Enregistrement des présences</h2>
+                            <p>Effectuer l'appel des étudiants.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Classe</label>
+                                <select id="classeAppel" required>
+                                    <option value="">Sélectionner une classe</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="dateAppel">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Heure du cours</label>
+                                <input type="time" id="heureAppel">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Matière</label>
+                                <input type="text" id="matiereAppel" placeholder="Nom de la matière">
+                            </div>
+                        </div>
+
+                        <button class="primary-button" id="chargerEtudiantsAppel">Afficher les étudiants</button>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Liste d'appel</h3>
+                            <div class="attendance-actions">
+                                <button class="small-button" id="toutPresent">Tous présents</button>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Matricule</th>
+                                        <th>Étudiant</th>
+                                        <th>Présent</th>
+                                        <th>Absent</th>
+                                        <th>Retard</th>
+                                        <th>Justifié</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listeAppel">
+                                    <tr>
+                                        <td colspan="6">Sélectionnez une classe pour afficher les étudiants.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="primary-button" id="enregistrerAppel">Enregistrer l'appel</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="page" id="historique">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Historique des présences</h2>
+                            <p>Consulter tous les appels enregistrés.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="table-toolbar">
+                            <input type="date" id="filtreDateHistorique">
+                            <select id="filtreClasseHistorique">
+                                <option value="">Toutes les classes</option>
+                            </select>
+                            <select id="filtreStatutHistorique">
+                                <option value="">Tous les statuts</option>
+                                <option value="Présent">Présent</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Retard">Retard</option>
+                                <option value="Justifié">Justifié</option>
+                            </select>
+                        </div>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Étudiant</th>
+                                        <th>Classe</th>
+                                        <th>Matière</th>
+                                        <th>Heure</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listeHistorique"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="page" id="justifications">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Justifications des absences</h2>
+                            <p>Consulter et traiter les justificatifs.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Étudiant</th>
+                                    <th>Date d'absence</th>
+                                    <th>Motif</th>
+                                    <th>Document</th>
+                                    <th>Décision</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listeJustifications"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="page" id="rapports">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Rapports et statistiques</h2>
+                            <p>Analyser l'assiduité des étudiants.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Classe</label>
+                                <select id="classeRapport">
+                                    <option value="">Toutes les classes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date de début</label>
+                                <input type="date" id="debutRapport">
+                            </div>
+                            <div class="form-group">
+                                <label>Date de fin</label>
+                                <input type="date" id="finRapport">
+                            </div>
+                        </div>
+                        <button class="primary-button" id="genererRapport">Générer le rapport</button>
+                    </div>
+
+                    <div class="statistics">
+                        <div class="stat-card">
+                            <p>Présences</p>
+                            <h2 id="rapportPresents">0</h2>
+                        </div>
+                        <div class="stat-card">
+                            <p>Absences</p>
+                            <h2 id="rapportAbsents">0</h2>
+                        </div>
+                        <div class="stat-card">
+                            <p>Retards</p>
+                            <h2 id="rapportRetards">0</h2>
+                        </div>
+                        <div class="stat-card">
+                            <p>Taux de présence</p>
+                            <h2 id="rapportTaux">0%</h2>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Détails du rapport</h3>
+                            <button class="primary-button" id="imprimerRapport">Imprimer</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Étudiant</th>
+                                        <th>Classe</th>
+                                        <th>Présences</th>
+                                        <th>Absences</th>
+                                        <th>Retards</th>
+                                        <th>Taux</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detailsRapport"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="page" id="utilisateurs">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Comptes utilisateurs</h2>
+                            <p>Gérer les accès à l'application.</p>
+                        </div>
+                        <button class="primary-button" id="ouvrirFormUtilisateur">+ Créer un compte</button>
+                    </div>
+
+                    <div class="panel" id="formulaireUtilisateur" hidden>
+                        <form id="formUtilisateur">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Nom complet</label>
+                                    <input type="text" id="nomCompte" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="emailCompte" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mot de passe</label>
+                                    <input type="password" id="motDePasseCompte" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Type de compte</label>
+                                    <select id="roleCompte" required>
+                                        <option value="">Choisir un rôle</option>
+                                        <option value="Administrateur">Administrateur</option>
+                                        <option value="Enseignant">Enseignant</option>
+                                        <option value="Étudiant">Étudiant</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="secondary-button" id="annulerUtilisateur">Annuler</button>
+                                <button type="submit" class="primary-button">Créer le compte</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="panel table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Rôle</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listeUtilisateurs"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="page" id="parametres">
+                    <div class="section-heading">
+                        <div>
+                            <h2>Paramètres</h2>
+                            <p>Configuration de l'application.</p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <form id="formParametres">
+                            <div class="form-group">
+                                <label>Nom de l'établissement</label>
+                                <input type="text" id="nomEtablissement" placeholder="Nom de votre établissement">
+                            </div>
+                            <div class="form-group">
+                                <label>Année académique</label>
+                                <input type="text" id="anneeAcademique" placeholder="2026-2027">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="primary-button">Enregistrer les paramètres</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="notificationMessage"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
